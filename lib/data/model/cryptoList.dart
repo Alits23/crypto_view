@@ -1,11 +1,11 @@
 class Crypto {
-  String? id;
-  int? rank;
-  String? symbol;
-  String? name;
-  double? marketCapUsd;
-  double? priceUsd;
-  double? changePercent24hr;
+  String id;
+  int rank;
+  String symbol;
+  String name;
+  double marketCapUsd;
+  double priceUsd;
+  double changePercent24hr;
   Crypto(
     this.id,
     this.rank,
