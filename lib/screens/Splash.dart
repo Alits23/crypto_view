@@ -21,39 +21,33 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.black,
         body: SafeArea(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('images/splash.jpg'),
-                fit: BoxFit.cover,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  'Crypto View',
+                  style: TextStyle(
+                    fontSize: 60.0,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.amber,
+                  ),
+                ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text(
-                    'Crypto View',
-                    style: TextStyle(
-                      fontSize: 60.0,
-                      fontWeight: FontWeight.w700,
-                      color: Color.fromARGB(255, 142, 147, 0),
-                    ),
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 100.0),
+                child: SpinKitSpinningLines(
+                  color: Colors.amber,
+                  size: 150.0,
+                  lineWidth: 10.0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
-                  child: SpinKitSpinningLines(
-                    color: Color.fromARGB(255, 142, 147, 0),
-                    size: 150.0,
-                    lineWidth: 10.0,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
