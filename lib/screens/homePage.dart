@@ -11,6 +11,7 @@ class CoinListPage extends StatefulWidget {
 
 class _CoinListPageState extends State<CoinListPage> {
   List<Crypto>? cryptoList;
+  bool darkTheme = false;
   @override
   void initState() {
     super.initState();
@@ -19,47 +20,101 @@ class _CoinListPageState extends State<CoinListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: ListView.builder(
-          itemCount: cryptoList!.length,
-          itemBuilder: (context, index) => ListTile(
-            title: Text(cryptoList![index].name),
-            subtitle: Text(cryptoList![index].symbol),
-            leading: SizedBox(
-              width: 30.0,
-              child: Center(
-                child: Text('${cryptoList![index].rank}'),
-              ),
+    return Theme(
+      data: darkTheme ? ThemeData.light() : ThemeData.dark(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Crypto',
+            style: TextStyle(
+              fontSize: 30.0,
+              color: darkTheme ? Colors.white : Colors.amber,
             ),
-            trailing: SizedBox(
-              width: 150,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // price
-                      Text(
-                        cryptoList![index].priceUsd.toStringAsFixed(2),
-                      ),
-                      Text(
-                        cryptoList![index].changePercent24hr.toStringAsFixed(2),
-                        style: TextStyle(
-                            color: getColorChangePercent24hr(
-                                cryptoList![index].changePercent24hr)),
-                      ),
-                    ],
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            alignment: Alignment.centerRight,
+            splashRadius: 0.1,
+            onPressed: () {
+              setState(() {
+                darkTheme = !darkTheme;
+              });
+            },
+            icon: getIconTheme(),
+          ),
+        ),
+        body: SafeArea(
+          child: ListView.builder(
+            itemCount: cryptoList!.length,
+            itemBuilder: (context, index) => Column(
+              children: [
+                ListTile(
+                  title: Text(
+                    cryptoList![index].name,
+                    style: TextStyle(
+                      fontSize: 21,
+                    ),
                   ),
-                  // Icon
-                  SizedBox(
-                    width: 10,
+                  subtitle: Text(
+                    cryptoList![index].symbol,
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                    ),
                   ),
-                  getIconChangePercent24hr(
-                      cryptoList![index].changePercent24hr),
-                ],
-              ),
+                  leading: SizedBox(
+                    width: 35.0,
+                    child: Center(
+                      child: Text('${cryptoList![index].rank} )'),
+                    ),
+                  ),
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: SizedBox(
+                      width: 150,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // price
+                              Text(
+                                cryptoList![index].priceUsd.toStringAsFixed(2),
+                              ),
+                              Text(
+                                cryptoList![index]
+                                    .changePercent24hr
+                                    .toStringAsFixed(2),
+                                style: TextStyle(
+                                  color: getColorChangePercent24hr(
+                                      cryptoList![index].changePercent24hr),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // Icon
+                          SizedBox(
+                            width: 10,
+                          ),
+                          getIconChangePercent24hr(
+                            cryptoList![index].changePercent24hr,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Divider(
+                    thickness: 1,
+                    height: 1,
+                    indent: 50,
+                    endIndent: 50,
+                    color: Colors.amber,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -95,6 +150,20 @@ class _CoinListPageState extends State<CoinListPage> {
     } else {
       //changePercent24hr > 0
       return Colors.redAccent;
+    }
+  }
+
+  Widget getIconTheme() {
+    if (darkTheme) {
+      return Icon(
+        Icons.light_mode,
+        color: Colors.white,
+      );
+    } else {
+      return Icon(
+        Icons.dark_mode_outlined,
+        color: Colors.amber,
+      );
     }
   }
 }
