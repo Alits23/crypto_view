@@ -1,5 +1,5 @@
 import 'package:crypto_view/data/model/cryptoList.dart';
-import 'package:crypto_view/screens/homePage.dart';
+import 'package:crypto_view/screens/BottomNavBar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -63,7 +63,7 @@ class _SplashPageState extends State<SplashPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CoinListPage(
+        builder: (context) => BottomNavBar(
           cryptoList: cryptoList,
         ),
       ),
