@@ -18,94 +18,106 @@ class _CoinListPageState extends State<CoinListPage> {
     cryptoList = widget.cryptoList;
   }
 
+  Future<void> _refreshData() {
+    return Future.delayed(Duration(seconds: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: cryptoList!.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              ListTile(
-                title: Text(
-                  cryptoList![index].name,
-                  style: TextStyle(
-                    fontSize: 21,
-                  ),
-                ),
-                subtitle: Text(
-                  cryptoList![index].symbol,
-                  style: TextStyle(
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-                leading: SizedBox(
-                  width: 35.0,
-                  child: Center(
-                    child: Text('${cryptoList![index].rank} )'),
-                  ),
-                ),
-                trailing: Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: SizedBox(
-                    width: 150,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // price
-                            Text(
-                              cryptoList![index].priceUsd.toStringAsFixed(2),
-                            ),
-                            Text(
-                              cryptoList![index]
-                                  .changePercent24hr
-                                  .toStringAsFixed(2),
-                              style: TextStyle(
-                                color: getColorChangePercent24hr(
-                                    cryptoList![index].changePercent24hr),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // Icon
-                        SizedBox(
-                          width: 10,
-                        ),
-                        getIconChangePercent24hr(
-                          cryptoList![index].changePercent24hr,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Center(
-                child: Divider(
-                  thickness: 1,
-                  height: 1,
-                  indent: 50,
-                  endIndent: 50,
-                  color: Colors.amber,
-                ),
-              ),
-            ],
+        child: RefreshIndicator(
+          color: Colors.amber,
+          backgroundColor: Colors.grey[800],
+          strokeWidth: 2.0,
+          displacement: 20,
+          onRefresh: _refreshData,
+          child: ListView.builder(
+            itemCount: cryptoList!.length,
+            itemBuilder: (context, index) => _getListTileItem(
+              cryptoList![index],
+            ),
           ),
         ),
       ),
     );
   }
 
+  Widget _getListTileItem(Crypto crypto) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            crypto.name,
+            style: TextStyle(
+              fontSize: 21,
+            ),
+          ),
+          subtitle: Text(
+            crypto.symbol,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+            ),
+          ),
+          leading: SizedBox(
+            width: 35.0,
+            child: Center(
+              child: Text('${crypto.rank} )'),
+            ),
+          ),
+          trailing: Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: SizedBox(
+              width: 150,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // price
+                      Text(
+                        crypto.priceUsd.toStringAsFixed(2),
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      Text(
+                        crypto.changePercent24hr.toStringAsFixed(2),
+                        style: TextStyle(
+                          color: getColorChangePercent24hr(
+                              crypto.changePercent24hr),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Icon
+                  SizedBox(
+                    width: 10,
+                  ),
+                  getIconChangePercent24hr(
+                    crypto.changePercent24hr,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Center(
+          child: Divider(
+            thickness: 1,
+            height: 1,
+            indent: 50,
+            endIndent: 50,
+            color: Colors.amber,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget getIconChangePercent24hr(double changePercent24hr) {
-    if (changePercent24hr == 0) {
-      return Icon(
-        Icons.trending_flat,
-        color: Colors.grey,
-      );
-    } else if (changePercent24hr > 0) {
+    if (changePercent24hr > 0) {
       return Icon(
         Icons.trending_up,
         color: Colors.green,

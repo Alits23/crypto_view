@@ -49,12 +49,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
           },
           letIndexChange: (index) => true,
         ),
+        // AppBar
         appBar: AppBar(
           backgroundColor: darkTheme ? Colors.blueAccent : Colors.grey[800],
           title: Text(
             'Crypto',
             style: TextStyle(
               fontSize: 30.0,
+              fontFamily: 'mh',
+              letterSpacing: 2.0,
               color: darkTheme ? Colors.white : Colors.amber,
             ),
           ),
