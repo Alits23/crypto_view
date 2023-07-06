@@ -32,10 +32,13 @@ class _CoinListPageState extends State<CoinListPage> {
           strokeWidth: 2.0,
           displacement: 20,
           onRefresh: _refreshData,
-          child: ListView.builder(
-            itemCount: cryptoList!.length,
-            itemBuilder: (context, index) => _getListTileItem(
-              cryptoList![index],
+          child: ScrollConfiguration(
+            behavior: MyBehavior(),
+            child: ListView.builder(
+              itemCount: cryptoList!.length,
+              itemBuilder: (context, index) => _getListTileItem(
+                cryptoList![index],
+              ),
             ),
           ),
         ),
@@ -140,5 +143,13 @@ class _CoinListPageState extends State<CoinListPage> {
       //changePercent24hr > 0
       return Colors.redAccent;
     }
+  }
+}
+
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }
