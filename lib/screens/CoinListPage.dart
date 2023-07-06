@@ -1,25 +1,34 @@
 import 'package:crypto_view/data/model/cryptoList.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CoinListPage extends StatefulWidget {
-  CoinListPage({super.key, this.cryptoList});
+  CoinListPage({super.key, this.cryptoList, this.darkTheme});
   List<Crypto>? cryptoList;
+  bool? darkTheme;
+
   @override
   State<CoinListPage> createState() => _CoinListPageState();
 }
 
 class _CoinListPageState extends State<CoinListPage> {
   List<Crypto>? cryptoList;
+  bool? darkTheme;
 
   @override
   void initState() {
     super.initState();
+    darkTheme = widget.darkTheme;
     cryptoList = widget.cryptoList;
   }
 
-  Future<void> _refreshData() {
-    return Future.delayed(Duration(seconds: 2));
+  Future<void> _refreshData() async {
+    List<Crypto> fereshData = await _getData();
+    setState(() {
+      cryptoList = fereshData;
+      darkTheme = widget.darkTheme;
+    });
   }
 
   @override
@@ -27,9 +36,9 @@ class _CoinListPageState extends State<CoinListPage> {
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
-          color: Colors.amber,
-          backgroundColor: Colors.grey[800],
-          strokeWidth: 2.0,
+          color: darkTheme! ? Colors.white : Colors.grey[800],
+          backgroundColor: darkTheme! ? Colors.blue : Colors.amber,
+          strokeWidth: 3.0,
           displacement: 20,
           onRefresh: _refreshData,
           child: ScrollConfiguration(
@@ -143,6 +152,14 @@ class _CoinListPageState extends State<CoinListPage> {
       //changePercent24hr > 0
       return Colors.redAccent;
     }
+  }
+
+  Future<List<Crypto>> _getData() async {
+    var response = await Dio().get('https://api.coincap.io/v2/assets');
+    List<Crypto> cryptoList = response.data['data']
+        .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
+        .toList();
+    return cryptoList;
   }
 }
 

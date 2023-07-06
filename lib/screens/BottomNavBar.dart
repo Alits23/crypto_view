@@ -92,6 +92,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       case 0:
         widget = CoinListPage(
           cryptoList: cryptoList,
+          darkTheme: darkTheme,
         );
         break;
       case 1:
