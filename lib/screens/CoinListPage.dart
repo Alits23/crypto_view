@@ -14,13 +14,18 @@ class CoinListPage extends StatefulWidget {
 
 class _CoinListPageState extends State<CoinListPage> {
   List<Crypto>? cryptoList;
-  bool? darkTheme;
 
+  List<Crypto>? updateList;
+  bool? darkTheme;
+  bool loadingSearch = false;
   @override
   void initState() {
     super.initState();
-    darkTheme = widget.darkTheme;
-    cryptoList = widget.cryptoList;
+    setState(() {
+      darkTheme = widget.darkTheme;
+      cryptoList = widget.cryptoList;
+      updateList = cryptoList;
+    });
   }
 
   Future<void> _refreshData() async {
@@ -40,19 +45,73 @@ class _CoinListPageState extends State<CoinListPage> {
           backgroundColor: darkTheme! ? Colors.blue : Colors.amber,
           strokeWidth: 3.0,
           displacement: 20,
-          onRefresh: _refreshData,
-          child: ScrollConfiguration(
-            behavior: MyBehavior(),
-            child: ListView.builder(
-              itemCount: cryptoList!.length,
-              itemBuilder: (context, index) => _getListTileItem(
-                cryptoList![index],
+          onRefresh: () {
+            return _refreshData();
+          },
+          child: Column(
+            children: [
+              _getTextFiled(),
+              ScrollConfiguration(
+                behavior: MyBehavior(),
+                child: Expanded(
+                  child: ListView.builder(
+                    itemCount: updateList!.length,
+                    itemBuilder: (context, index) => _getListTileItem(
+                      updateList![index],
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _getTextFiled() {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: TextField(
+        onChanged: (value) {
+          setState(() {
+            _filterList(value);
+          });
+        },
+        decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: darkTheme! ? Colors.blue : Colors.amber,
+            ),
+          ),
+          labelText: 'Search',
+          suffixIcon: Icon(
+            Icons.search,
+            color: darkTheme! ? Colors.blue : Colors.amber,
+          ),
+          labelStyle: TextStyle(
+            color: darkTheme!
+                ? Colors.blue.withOpacity(0.8)
+                : Colors.amber.withOpacity(0.4),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+            borderSide: BorderSide(
+                width: 20.0, color: Colors.red, style: BorderStyle.none),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _filterList(String KeyWords) async {
+    setState(() {
+      List<Crypto> cryptoFilterList = [];
+      cryptoFilterList = cryptoList!.where((element) {
+        return element.name.toLowerCase().contains(KeyWords.toLowerCase());
+      }).toList();
+      updateList = cryptoFilterList;
+    });
   }
 
   Widget _getListTileItem(Crypto crypto) {
@@ -159,6 +218,7 @@ class _CoinListPageState extends State<CoinListPage> {
     List<Crypto> cryptoList = response.data['data']
         .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
         .toList();
+
     return cryptoList;
   }
 }
